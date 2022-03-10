@@ -60,7 +60,8 @@ class PoolDatabaseServiceProvider extends ServiceProvider
         // connections might be managed. It also implements the connection resolver
         // interface which may be used by other components requiring connections.
         $this->app->singleton('db', function ($app) {
-            return new PdoPoolManager($app, $app['pool_db.factory']);
+            $max = empty($app['config']['database']['pool']['max']) ? $app['config']['database']['pool']['max'] : 10;
+            return new PdoPoolManager($app, $app['pool_db.factory'], $max);
         });
 
         $this->app->bind('db.connection', function ($app) {

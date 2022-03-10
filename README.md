@@ -6,6 +6,23 @@
 
 >! composer require jose-chan/laravel-database-pool
 
+#### 配置
+
+`config/database.php`文件中增加`pool`配置项
+
+````php
+<?php
+[
+    //……省略
+
+    'pool' => [
+        "max" => 10, // 配置最大连接数
+    ]
+
+];
+
+````
+
 #### 使用
 
 找到`config/app.php`文件中的`providers`配置，将`Illuminate\Database\DatabaseServiceProvider::class`替换为`JoseChan\Laravel\Database\Pool\Provider\PoolDatabaseServiceProvider::class即可`
@@ -83,4 +100,6 @@ class TestController extends \App\Http\Controllers\Controller
 
 #### 其他说明
 
-该组建适用于laravel框架+swoole协程框架中，协程并发多个sql异步请求mysql，提高整体的执行效率，在非协程环境下，该组建将不会创建多个mysql连接
+- 该组建适用于laravel框架+swoole协程框架中，协程并发多个sql异步请求mysql，提高整体的执行效率，在非协程环境下，该组建将不会创建多个mysql连接
+
+- 如果线程池中的所有连接都被借光了，则会抛出一个异常

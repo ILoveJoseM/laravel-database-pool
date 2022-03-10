@@ -9,6 +9,7 @@
 namespace JoseChan\Laravel\Database\Pool\Database;
 
 use Illuminate\Database\Connection;
+use Illuminate\Database\Connectors\ConnectionFactory;
 use Illuminate\Database\DatabaseManager;
 use JoseChan\Laravel\Database\Pool\Utils\ConnectionResource;
 use Swoole\Coroutine;
@@ -40,6 +41,12 @@ class PdoPoolManager extends DatabaseManager
      * @var array
      */
     protected $borrows = [];
+
+    public function __construct(\Illuminate\Foundation\Application $app, ConnectionFactory $factory, $max = 10)
+    {
+        $this->max = $max;
+        parent::__construct($app, $factory);
+    }
 
 
     /**
@@ -138,6 +145,6 @@ class PdoPoolManager extends DatabaseManager
      */
     private function isCoroutine()
     {
-        return class_exists(Coroutine::class) && \Swoole\Coroutine::getuid() != -1;
+        return class_exists(Coroutine::class) && Coroutine::getuid() != -1;
     }
 }
