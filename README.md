@@ -25,7 +25,7 @@
 
 #### 使用
 
-找到`config/app.php`文件中的`providers`配置，将`Illuminate\Database\DatabaseServiceProvider::class`替换为`JoseChan\Laravel\Database\Pool\Provider\PoolDatabaseServiceProvider::class即可`
+找到`config/app.php`文件中的`providers`配置，将`Illuminate\Database\DatabaseServiceProvider::class`替换为`JoseChan\Laravel\Database\Pool\Provider\PoolDatabaseServiceProvider::class`即可
 
 ````php
 <?php 
