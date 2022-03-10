@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use JoseChan\Laravel\Database\Pool\Database\PdoPoolConnectionFactory;
 use JoseChan\Laravel\Database\Pool\Database\PdoPoolManager;
 
+/**
+ * Class PoolDatabaseServiceProvider
+ * @package JoseChan\Laravel\Database\Pool\Provider
+ */
 class PoolDatabaseServiceProvider extends ServiceProvider
 {
     /**
