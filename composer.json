@@ -1,0 +1,41 @@
+{
+  "name": "jose-chan/laravel-database-pool",
+  "description": "laravel database pool",
+  "keywords": ["database", "laravle", "pool"],
+  "authors": [{
+    "name": "JoseChan",
+    "email": "524233828@qq.com"
+  }],
+  "license": "MIT",
+  "type": "library",
+  "require": {
+    "php": "^7.2",
+    "laravel/framework" : "^5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "JoseChan\\Laravel\\Database\\Pool\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "dont-discover": [
+      ],
+      "providers": [
+        "JoseChan\\Laravel\\Database\\Pool\\Providers\\PoolDatabaseServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
