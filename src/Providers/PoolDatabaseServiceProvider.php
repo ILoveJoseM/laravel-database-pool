@@ -1,6 +1,6 @@
 <?php
 
-namespace JoseChan\Laravel\Database\Pool\Provider;
+namespace JoseChan\Laravel\Database\Pool\Providers;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
