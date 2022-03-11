@@ -41,6 +41,22 @@ class ConnectionResource
     }
 
     /**
+     * @return Connection
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
      * 析构函数，归还连接
      */
     public function __destruct()

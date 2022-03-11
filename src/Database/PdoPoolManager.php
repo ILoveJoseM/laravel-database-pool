@@ -48,6 +48,13 @@ class PdoPoolManager extends DatabaseManager
         parent::__construct($app, $factory);
     }
 
+    /**
+     * @return array
+     */
+    public function getConnections()
+    {
+        return count($this->connections['mysql']) + count($this->borrows['mysql']);
+    }
 
     /**
      * Get a database connection instance.
@@ -60,6 +67,12 @@ class PdoPoolManager extends DatabaseManager
         [$database, $type] = $this->parseConnectionName($name);
 
         $name = $name ?: $database;
+
+        // 获取当前协程的连接，有连接的时候直接返回
+        $connection = $this->getCurrentCoConnection($name);
+        if (!empty($connection)) {
+            return $connection;
+        }
 
         /**
          * 改成：
@@ -137,6 +150,25 @@ class PdoPoolManager extends DatabaseManager
         if ($context instanceof CoContext) {
             $context['connectionResource'] = new ConnectionResource($name, $connection, $this);
         }
+    }
+
+    /**
+     * @param $name
+     * @return Connection|null
+     */
+    private function getCurrentCoConnection($name)
+    {
+        $connection = null;
+        if ($this->isCoroutine()) {
+            $context = Coroutine::getContext();
+            if ($context instanceof CoContext) {
+                if (!empty($context['connectionResource']) && $context['connectionResource']->getName() == $name) {
+                    $connection = $context['connectionResource']->getConnection();
+                }
+            }
+        }
+
+        return $connection;
     }
 
     /**
