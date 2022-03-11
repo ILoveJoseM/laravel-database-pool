@@ -48,13 +48,6 @@ class PdoPoolManager extends DatabaseManager
         parent::__construct($app, $factory);
     }
 
-    /**
-     * @return array
-     */
-    public function getConnections()
-    {
-        return count($this->connections['mysql']) + count($this->borrows['mysql']);
-    }
 
     /**
      * Get a database connection instance.
