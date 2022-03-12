@@ -42,6 +42,9 @@ class PdoPoolManager extends DatabaseManager
      */
     protected $borrows = [];
 
+    /** @var array $yieldCo 因为借不到连接被中断的协程 */
+    private $yieldCo = [];
+
     public function __construct(\Illuminate\Foundation\Application $app, ConnectionFactory $factory, $max = 10)
     {
         $this->max = $max;
@@ -95,15 +98,20 @@ class PdoPoolManager extends DatabaseManager
      */
     private function borrow($name)
     {
-        if (empty($this->connections[$name])) {
-            throw new \Exception("The number of MySQL connections in the Pool has reached the limit");
-        }
-
         if (!$this->isCoroutine()) {
             // 非协程环境，没必要借用，因为是同步执行，用同一个连接就可以
             /** @var \Illuminate\Database\Connection|\stdClass $connection */
             $connection = $this->connections[$name][0];
         } else {
+            while (empty($this->connections[$name])) {
+//                throw new \Exception("The number of MySQL connections in the Pool has reached the limit");
+                // 当前连接已借用完，因此记录协程ID，并中断协程等待连接释放
+                $cid = Coroutine::getuid();
+                if (!in_array($cid, $this->yieldCo)) {
+                    array_push($this->yieldCo, $cid);
+                }
+                Coroutine::suspend();
+            }
             /** @var \Illuminate\Database\Connection|\stdClass $connection */
             $connection = array_pop($this->connections[$name]);
             $this->coContext($name, $connection);
@@ -130,6 +138,12 @@ class PdoPoolManager extends DatabaseManager
         }
 
         array_push($this->connections[$name], $connection);
+
+        // 归还完毕后，看有没有中断的协程，有的话唤醒
+        if (!empty($this->yieldCo)) {
+            $cid = array_pop($this->yieldCo);
+            Coroutine::resume($cid);
+        }
     }
 
     /**
